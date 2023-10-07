@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\TinderClone.props" />
+</Project>
