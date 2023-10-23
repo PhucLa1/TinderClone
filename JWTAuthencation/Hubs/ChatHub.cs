@@ -1,5 +1,4 @@
-﻿using JWTAuthencation.Models;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace JWTAuthencation.Hubs
 {
@@ -10,11 +9,19 @@ namespace JWTAuthencation.Hubs
             
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
-
+        //Gửi trạng thái trong khi đang gọi điện
         public async Task CameraStateChange(string userId, bool isCameraOn)
         {
             // Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
             await Clients.All.SendAsync("CameraState", userId, isCameraOn);
         }
+
+        public async Task AudioStateChange(string userId, bool isAudioOn)
+        {
+            // Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
+            await Clients.All.SendAsync("AudioState", userId, isAudioOn);
+        }
+
+        //Gửi trạng thái trước khi gọi điện
     }
 }

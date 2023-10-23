@@ -1,10 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using JWTAuthencation.Models;
 
 namespace JWTAuthencation.Data
 {
     public class JWTAuthencationContext : DbContext
     {
         public JWTAuthencationContext(DbContextOptions<JWTAuthencationContext> options):base(options){}
-        public DbSet<JWTAuthencation.Models.Users> Users { get; set; } = default!;
+        public virtual DbSet<Block> Block { get; set; } = null!;
+        public virtual DbSet<Call> Call { get; set; } = null!;
+        public virtual DbSet<CallStatus> CallStatus { get; set; } = null!;
+        public virtual DbSet<Languages> Languages { get; set; } = null!;
+        public virtual DbSet<LifeStyle> LifeStyle { get; set; } = null!;
+        public virtual DbSet<Like> Like { get; set; } = null!;
+        public virtual DbSet<Mess> Mess { get; set; } = null!;
+        public virtual DbSet<Passion> Passion { get; set; } = null!;
+        public virtual DbSet<Permission> Permission { get; set; } = null!;
+        public virtual DbSet<Photo> Photos{ get; set; } = null!;
+        public virtual DbSet<Setting> Setting { get; set; } = null!;
+        public virtual DbSet<SuggestedQuestion> SuggestedQuestion { get; set; } = null!;
+        public virtual DbSet<Unlike> Unlike { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserLifeStyle> UserLifeStyle { get; set; } = null!;
+        public virtual DbSet<UserWork> UserWork { get; set; } = null!;
+        public virtual DbSet<UsersLanguage> UsersLanguage { get; set; } = null!;
+        public virtual DbSet<UsersPassion> UsersPassion { get; set; } = null!;
+        public virtual DbSet<Work> Work { get; set; } = null!;
     }
 }
