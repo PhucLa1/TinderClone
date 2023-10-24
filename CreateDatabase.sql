@@ -6,25 +6,40 @@ ID int identity(1,1) primary key,
 SettingID int,
 PermissionID int,
 FullName nvarchar(50),
-Email varchar(50),
 UserName varchar(100),
 TagName nvarchar(100),
 LikeAmount int,
 Pass varchar(max),
 GoogleID varchar(max),
 FacebookID varchar(max),
-PhoneNumber varchar(12),
 IsBlocked bit default(0),
 IsDeleted bit default(0),
 AboutUser text, --Introduce yourselves by an essay
-PassionID int,
-JobTitle varchar(255),
-LookingFor varchar(255),
+PurposeDateID smallint,
 Gender bit,
-SexsualOrientation varchar(255),
-Height int,
+SexsualOrientationID smallint,
+Height smallint,
+ZodiacID smallint,
+EducationID smallint,
+FutureFamilyID smallint,
+VacxinCovidID smallint,
+PersonalityID smallint,
+CommunicationID smallint,
+LoveLanguageID smallint,
+PetID smallint,
+AlcolholID smallint,
+SmokeID smallint,
+WorkoutID smallint,
+DietID smallint,
+SocialMediaID smallint,
+SleepHabitID smallint,
+JobTitle varchar(255),
+Company nvarchar(max),
+School nvarchar(255),
+LiveAt nvarchar(255),
 OfStatus tinyint default(1)
 )
+
 
 --Create table UserLanguage
 create table UsersLanguages(
@@ -67,6 +82,7 @@ create table Setting(
 ID int identity(1,1) primary key,
 OfStatus tinyint default(1),
 Latitute float,
+PhoneNumber varchar(12),
 Longtitute float,
 DistancePreference int,
 LookFor nvarchar(100),
@@ -75,6 +91,7 @@ AgeMax int,
 DistanceUnit int,
 GlobalMatches int,
 HideAge int,
+Email varchar(50),
 HideDistance int,
 )
 
@@ -84,30 +101,85 @@ OfStatus tinyint default(1),
 ImagePath varchar(100),
 UserID int
 )
-
-create table UserWork(
+create table SexsualOrientation(
 ID int identity(1,1) primary key,
 OfStatus tinyint default(1),
-UserID int,
-WorkID int
+SOName nvarchar(50)
 )
-create table UserLifeStyle(
+create table Communication(
 ID int identity(1,1) primary key,
 OfStatus tinyint default(1),
-UserID int,
-LifeStyleID int
+CName nvarchar(50)
 )
-create table Work(
+create table LoveLanguage(
 ID int identity(1,1) primary key,
 OfStatus tinyint default(1),
-WName nvarchar(255),
-Descriptions text
+LLName nvarchar(50)
 )
-create table LifeStyle(
+create table Pet(
 ID int identity(1,1) primary key,
 OfStatus tinyint default(1),
-LSName nvarchar(255),
-Descriptions text
+PName nvarchar(50)
+)
+create table Alcolhol(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+AName nvarchar(100)
+)
+create table Diet(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+DName nvarchar(100)
+)
+create table VacxinCovid(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+VCName nvarchar(100)
+)
+create table Zodiac(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+ZName nvarchar(30)
+)
+create table Personality(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+PName nvarchar(100)
+)
+create table Smoke(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+SName nvarchar(100)
+)
+create table SocialMedia(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+SMName nvarchar(100)
+)
+create table Education(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+EName nvarchar(100)
+)
+create table PurposeDate(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+PDName nvarchar(100)
+)
+create table FutureFamily(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+FFName nvarchar(100)
+)
+create table Workout(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+WName nvarchar(100)
+)
+create table SleepHabit(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+SHName nvarchar(100)
 )
 create table Mess(
 ID int identity(1,1) primary key,

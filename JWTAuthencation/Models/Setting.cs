@@ -17,5 +17,8 @@ namespace JWTAuthencation.Models
         public int? GlobalMatches { get; set; }
         public int? HideAge { get; set; }
         public int? HideDistance { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Email { get; set; }
+
     }
 }
