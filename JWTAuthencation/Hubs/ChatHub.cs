@@ -23,5 +23,15 @@ namespace JWTAuthencation.Hubs
         }
 
         //Gửi trạng thái trước khi gọi điện
+        public async Task CallWait(string userId)
+        {
+            // Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
+            await Clients.All.SendAsync("CallWaitUser", userId);
+        }
+        public async Task CallAnswer(string userId,bool Ans)
+        {
+            // Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
+            await Clients.All.SendAsync("CallAnswerUser", userId,Ans);
+        }
     }
 }

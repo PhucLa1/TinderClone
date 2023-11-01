@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\ViewModels - Copy\**" />
+    <Content Remove="Models\ViewModels - Copy\**" />
+    <EmbeddedResource Remove="Models\ViewModels - Copy\**" />
+    <None Remove="Models\ViewModels - Copy\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Controllers\LanguageController.cs" />
   </ItemGroup>
 

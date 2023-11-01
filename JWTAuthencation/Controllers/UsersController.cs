@@ -9,12 +9,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using JWTAuthencation.Models;
+using JWTAuthencation.Models.ViewModel;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace JWTAuthencation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly JWTAuthencationContext _context;
@@ -23,57 +25,22 @@ namespace JWTAuthencation.Controllers
             _context = context;
         }
 
-        [Authorize]
         [HttpGet]
-        [Route("GetAllUser")]
-        public async Task<ActionResult<IEnumerable<User>>> getAll()
+        [Route("GetDetailUser")]
+        public async Task<IActionResult> getDetail(int id)
         {
-            return _context.Users.ToList();
+            var passion = _context.UsersPassion.Where(up => up.UserId == id)
+                .Join(_context.Passion,up => up.PassionId,p => p.Id,(up, p) => p.Pname).ToList();
+            var languages = _context.UsersLanguages.Where(ul => ul.UserId == id)
+                .Join(_context.Languages, ul => ul.LanguageId, l => l.Id, (ul, l) => l.Lname).ToList();
+            UserInfo userProfile = _context.
+                GetUserProfile.FromSqlRaw("EXEC GetUserProfile @userID", new SqlParameter("userId", id))
+                .AsEnumerable().FirstOrDefault();
+            userProfile.passion = passion;
+            userProfile.languages = languages;
+            return Ok(userProfile);
+
         }
-
-
-        //[HttpPost]
-        //[Route("Add")]
-        //public async Task<IActionResult> AddNewUsers([FromForm]Users user)
-        //{
-        //    user.ImagePath = await HandleImage.Upload(user.FileImage);
-        //    _context.Users.Add(user);
-        //    _context.SaveChanges();
-        //    return Ok();
-        //}
-
-        [Authorize]
-        [HttpPut]
-        [Route("Update/{id}")]
-        public async Task<IActionResult> UpdateUsers(int id, User user)
-        {
-            _context.Users.Update(user);
-            _context.SaveChanges();
-            return Ok();
-        }
-
-        [Authorize]
-        [HttpDelete]
-        [Route("Delete/{id}")]
-        public async Task<IActionResult> DeleteUsers(int id)
-        {
-            var user = _context.Users.Where(x => x.Id == id).FirstOrDefault();
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-            return Ok();
-        }
-
-        [Authorize]
-        [HttpGet]
-        [Route("Details/{id}")]
-        public async Task<ActionResult<User>> GetUserById(int id)
-        {
-            var user = _context.Users.Where(x => x.Id == id).FirstOrDefault();
-            return user;
-        }
-
-
-
 
         [HttpPost]
         [Route("UploadFile")]
@@ -83,12 +50,6 @@ namespace JWTAuthencation.Controllers
             return Ok(res);
         }
 
-        [HttpGet]
-        [Route("GetImageUrl")]
-        //Láy url của ảnh để hiện ra
-        public async Task<IActionResult> GetImageUrl(string imagePath)
-        {
-            return await HandleImage.GetImageUrl(imagePath);
-        }      
+      
     }
 }

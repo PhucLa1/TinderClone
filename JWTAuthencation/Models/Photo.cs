@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JWTAuthencation.Models
 {
@@ -9,5 +10,8 @@ namespace JWTAuthencation.Models
         public byte? OfStatus { get; set; }
         public string? ImagePath { get; set; }
         public int? UserId { get; set; }
+
+        [NotMapped]
+        public IFormFile? Image { get; set; }
     }
 }
