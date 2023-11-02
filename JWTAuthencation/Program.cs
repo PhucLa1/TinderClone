@@ -15,6 +15,7 @@ builder.Services.AddDbContext<JWTAuthencationContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("JWTAuthencationContext") ?? throw new InvalidOperationException("Connection string 'JWTAuthencationContext' not found.")));
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigin",
@@ -37,6 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
+            //2 dong
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidAudience = builder.Configuration["Jwt:Audience"],

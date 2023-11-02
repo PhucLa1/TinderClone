@@ -8,6 +8,8 @@ using System.Text;
 using JWTAuthencation.Models;
 using JWTAuthencation.Models.OtherModels;
 using System.Security.Cryptography;
+using Newtonsoft.Json;
+using Google.Apis.Auth;
 
 namespace JWTAuthencation.Controllers
 {
@@ -17,11 +19,20 @@ namespace JWTAuthencation.Controllers
     {
         private readonly JWTAuthencationContext _context;
         private readonly IConfiguration _configuration;
+        private readonly HttpClient _httpClient;
 
-        public LoginSignUp(JWTAuthencationContext context, IConfiguration configuration)
+
+        public LoginSignUp(
+            JWTAuthencationContext context,
+            IConfiguration configuration,
+            HttpClient httpClient
+
+            )
         {
             _context = context;
             _configuration = configuration;
+            _httpClient = httpClient;
+
         }
 
         [HttpPost]
@@ -35,7 +46,7 @@ namespace JWTAuthencation.Controllers
                 if (Result != null)
                 {
                     JWTGenerator(Result);
-                    return Ok(user);
+                    return Ok(Result);
                 }
                 else
                 {
@@ -47,6 +58,59 @@ namespace JWTAuthencation.Controllers
                 return BadRequest("No data ");
             }
         }
+
+        [HttpPost]
+        [Route("FacebookLogin")]
+        public async Task<IActionResult> FacebookLogin(string credential)
+        {
+            string appId = _configuration["Facebook:AppId"];
+            string appSecret = _configuration["Facebook:AppSecret"];
+            HttpResponseMessage debugTokenResponse = await _httpClient.GetAsync($"https://graph.facebook.com/debug_token?input_token={credential}&access_token={appId}|{appSecret}");
+            var stringThing = await debugTokenResponse.Content.ReadAsStringAsync();
+            var userOBJK = JsonConvert.DeserializeObject<FacebookTokenValidationResult>(stringThing);
+
+            if (!userOBJK.Data.IsValid)
+            {
+                return Unauthorized("You are not logged into our app");
+            }
+            HttpResponseMessage meResponse = await _httpClient.GetAsync($"https://graph.facebook.com/me?fields=first_name,last_name,picture,email&access_token={credential}");
+            var userContent = await meResponse.Content.ReadAsStringAsync();
+            var userContentObj = JsonConvert.DeserializeObject<FacebookUserInfoResult>(userContent);
+
+            var userSetting = _context.Setting.Where(e => e.Email == userContentObj.Email).FirstOrDefault();
+            if(userSetting == null)
+            {
+                return NotFound("There are no accounts created by this facebook account");
+            }
+            else
+            {
+                var user = _context.Users.Where(e => e.SettingId == userSetting.Id).FirstOrDefault();
+                return Ok(JWTGenerator(user));
+            }
+        }
+        [HttpPost]
+        [Route("GoogleLogin")]
+        public async Task<IActionResult> GoogleLogin(string credential)
+        {
+            var settings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { _configuration["Google:ClientID"] }
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(credential, settings);
+            var userSetting = _context.Setting.Where(e => e.Email == payload.Email).FirstOrDefault();
+            if(userSetting == null)
+            {
+                return BadRequest("No user use this email");
+            }
+            else
+            {
+                var user = _context.Users.Where(e => e.SettingId == userSetting.Id).FirstOrDefault();
+                return Ok(JWTGenerator(user));
+            }
+        }
+
+
         private dynamic JWTGenerator(User Result)
         {
             var claims = new[] {
@@ -76,16 +140,6 @@ namespace JWTAuthencation.Controllers
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, Result);
 
-
-            HttpContext.Response.Cookies.Append("token", encrypterToken,
-                new CookieOptions
-                {
-                    Expires = DateTime.UtcNow.AddDays(7),
-                    HttpOnly = true,
-                    Secure = true,
-                    IsEssential = true,
-                    SameSite = SameSiteMode.None
-                });
             return new { token = encrypterToken, username = Result.UserName };
         }
 
@@ -145,7 +199,7 @@ namespace JWTAuthencation.Controllers
         }
 
         [HttpDelete]
-        private async Task<IActionResult> RevokeToken(string username)
+        public async Task<IActionResult> RevokeToken(string username)
         {
             _context.Users.Where(e => e.UserName == username).FirstOrDefault().Token = string.Empty;
             return Ok();
@@ -158,7 +212,7 @@ namespace JWTAuthencation.Controllers
             var findOfUser = _context.Users.Where(e => e.UserName == user.UserName).FirstOrDefault();
             if (findOfUser != null)
             {
-                return Ok("This account already exists");
+                return BadRequest("This account already exists");
             }
             else
             {
@@ -170,17 +224,17 @@ namespace JWTAuthencation.Controllers
                 _context.Setting.Add(setting);
 
                 //Thêm ngôn ngữ,sở thích
-                List<Languages> languages = new List<Languages>();
-                List<Passion> passions = new List<Passion>();
-                Languages language = new Languages() { };
-                Passion passion = new Passion() { };
+                List<UsersLanguages> languages = new List<UsersLanguages>();
+                List<UsersPassion> passions = new List<UsersPassion>();
+                UsersLanguages language = new UsersLanguages() { };
+                UsersPassion passion = new UsersPassion() { };
                 for (int i = 0; i < 5; i++)
                 {
                     languages.Add(language);
                     passions.Add(passion);
                 }
-                _context.Languages.AddRange(languages);
-                _context.Passion.AddRange(passions); 
+                _context.UsersLanguages.AddRange(languages);
+                _context.UsersPassion.AddRange(passions); 
                 _context.SaveChanges();
                 return Ok("Sign Up Successful");                              
             }
