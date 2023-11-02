@@ -33,11 +33,13 @@ namespace JWTAuthencation.Controllers
                 .Join(_context.Passion,up => up.PassionId,p => p.Id,(up, p) => p.Pname).ToList();
             var languages = _context.UsersLanguages.Where(ul => ul.UserId == id)
                 .Join(_context.Languages, ul => ul.LanguageId, l => l.Id, (ul, l) => l.Lname).ToList();
+            var photos = _context.Photo.Select(e => "https://localhost:7251/Uploads/"+e.ImagePath).ToList();
             UserInfo userProfile = _context.
                 GetUserProfile.FromSqlRaw("EXEC GetUserProfile @userID", new SqlParameter("userId", id))
                 .AsEnumerable().FirstOrDefault();
             userProfile.passion = passion;
             userProfile.languages = languages;
+            userProfile.photos = photos;
             return Ok(userProfile);
 
         }

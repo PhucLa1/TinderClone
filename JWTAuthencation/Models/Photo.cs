@@ -6,7 +6,7 @@ namespace JWTAuthencation.Models
 {
     public partial class Photo
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public byte? OfStatus { get; set; }
         public string? ImagePath { get; set; }
         public int? UserId { get; set; }

@@ -9,7 +9,7 @@ namespace JWTAuthencation.HelpMethod
             string filename = "";
             try
             {
-                var extension = " . " + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
+                var extension = "." + file.FileName.Split('.')[file.FileName.Split('.').Length - 1];
                 filename = DateTime.Now.Ticks.ToString() + extension;
 
                 var filepath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
@@ -19,7 +19,7 @@ namespace JWTAuthencation.HelpMethod
                 {
                     Directory.CreateDirectory(filepath);
                 }
-                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", filename);
+                var exactpath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", filename);
 
                 using (var stream = new FileStream(exactpath, FileMode.Create))
                 {

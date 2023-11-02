@@ -45,12 +45,60 @@ namespace JWTAuthencation.Controllers
                 var Result = _context.Users.Where(e => e.UserName == user.UserName && e.Pass == user.Pass).FirstOrDefault();
                 if (Result != null)
                 {
-                    JWTGenerator(Result);
-                    return Ok(Result);
+                    
+                    return Ok(JWTGenerator(Result));
                 }
                 else
                 {
                     return BadRequest("Error data");
+                }
+            }
+            else
+            {
+                return BadRequest("No data ");
+            }
+        }
+        [HttpPost]
+        [Route("LoginAdminPage")]
+        public async Task<IActionResult> LoginAdmin(Admin admin)
+        {
+
+            if (admin != null)
+            {
+                var Result = _context.Admin.Where(e => e.UserName == admin.UserName && e.Pass == admin.Pass).FirstOrDefault();
+                if (Result != null)
+                {
+                    var claims = new[] {
+                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+                        new Claim("Id", Result.ID.ToString()),
+                        new Claim("UserName", Result.UserName),
+                        new Claim("Password", Result.Pass),
+                        //new Claim("Height", Result.Height.ToString())
+                    };
+
+
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                    var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                    var token = new JwtSecurityToken(
+                        _configuration["Jwt:Issuer"],
+                        _configuration["Jwt:Audience"],
+                        claims,
+                        expires: DateTime.UtcNow.AddDays(7),
+                        signingCredentials: signIn);
+
+                    var encrypterToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                    SetJWT(encrypterToken);
+                    var refreshToken = GenerateRefreshToken();
+                    SetRefreshTokenForAdmin(refreshToken, Result);
+
+                    return Ok(admin);
+                }
+                else
+                {
+                    return StatusCode(422,"Error data");
                 }
             }
             else
@@ -183,6 +231,22 @@ namespace JWTAuthencation.Controllers
             userOfRes.Token = refreshToken.Token;
             userOfRes.TokenCreated = refreshToken.Created;
             userOfRes.TokenExpires = refreshToken.Expires;
+        }
+        private void SetRefreshTokenForAdmin(RefreshToken refreshToken, Admin admin)
+        {
+            HttpContext.Response.Cookies.Append("X-Refresh-Token", refreshToken.Token,
+                new CookieOptions
+                {
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    HttpOnly = true,
+                    Secure = true,
+                    IsEssential = true,
+                    SameSite = SameSiteMode.None
+                });
+            var adminOfRes = _context.Admin.Where(e => e.UserName == admin.UserName).FirstOrDefault();
+            adminOfRes.Token = refreshToken.Token;
+            adminOfRes.TokenCreated = refreshToken.Created;
+            adminOfRes.TokenExpires = refreshToken.Expires;
         }
 
         private void SetJWT(string encrypterToken)

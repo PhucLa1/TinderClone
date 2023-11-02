@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "XkwrGTCPjhmoF9cSHcP+U7fO+ura+ZOjGovltXEhYn6aU4EuN7sxXYuwfUMyUOdHMOKpAjp4yfORixG4iTKD9w==",
+  "dgSpecHash": "7MJjOM+3rsiT+mvRadcvKsuWfeo3tFrXN2sdmaILkq5zjONdhWiC4+KWC1bwGcNhYUHLuqOXaitHeFoiXBOgww==",
   "success": true,
   "projectFilePath": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\JWTAuthencation.csproj",
   "expectedPackageFiles": [
@@ -120,12 +120,14 @@
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.caching.memory\\7.0.0\\microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
+    "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.configuration.binder\\7.0.3\\microsoft.extensions.configuration.binder.7.0.3.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.features\\6.0.23\\microsoft.extensions.features.6.0.23.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\6.0.0\\microsoft.extensions.fileproviders.abstractions.6.0.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.fileproviders.embedded\\6.0.23\\microsoft.extensions.fileproviders.embedded.6.0.23.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.hosting.abstractions\\2.2.0\\microsoft.extensions.hosting.abstractions.2.2.0.nupkg.sha512",
+    "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.http\\7.0.0\\microsoft.extensions.http.7.0.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.identity.core\\6.0.23\\microsoft.extensions.identity.core.6.0.23.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.identity.stores\\6.0.23\\microsoft.extensions.identity.stores.6.0.23.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\microsoft.extensions.logging\\7.0.0\\microsoft.extensions.logging.7.0.0.nupkg.sha512",
@@ -198,6 +200,8 @@
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.collections.concurrent\\4.3.0\\system.collections.concurrent.4.3.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.collections.immutable\\6.0.0\\system.collections.immutable.6.0.0.nupkg.sha512",
+    "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.collections.nongeneric\\4.3.0\\system.collections.nongeneric.4.3.0.nupkg.sha512",
+    "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.collections.specialized\\4.3.0\\system.collections.specialized.4.3.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.composition\\1.0.31\\system.composition.1.0.31.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.composition.attributedmodel\\1.0.31\\system.composition.attributedmodel.1.0.31.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.composition.convention\\1.0.31\\system.composition.convention.1.0.31.nupkg.sha512",
@@ -277,7 +281,10 @@
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.threading.timer\\4.3.0\\system.threading.timer.4.3.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
     "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
-    "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"
+    "C:\\Users\\Hong Phuc\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
+    "C:\\Users\\Hong Phuc\\.nuget\\packages\\twilio\\6.14.1\\twilio.6.14.1.nupkg.sha512",
+    "C:\\Users\\Hong Phuc\\.nuget\\packages\\twilio.aspnet.common\\8.0.2\\twilio.aspnet.common.8.0.2.nupkg.sha512",
+    "C:\\Users\\Hong Phuc\\.nuget\\packages\\twilio.aspnet.core\\8.0.2\\twilio.aspnet.core.8.0.2.nupkg.sha512"
   ],
   "logs": [
     {

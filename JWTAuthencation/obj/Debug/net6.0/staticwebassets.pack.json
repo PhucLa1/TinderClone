@@ -1,6 +1,30 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638323920652001181.jpg",
+      "PackagePath": "staticwebassets\\Uploads\\638323920652001181.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638323926381591110.jpg",
+      "PackagePath": "staticwebassets\\Uploads\\638323926381591110.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638345661120573886.jpg",
+      "PackagePath": "staticwebassets\\Uploads\\638345661120573886.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638345661748997528.jpg",
+      "PackagePath": "staticwebassets\\Uploads\\638345661748997528.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638345669037846466.jpg",
+      "PackagePath": "staticwebassets\\Uploads\\638345669037846466.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638345671035406295.jpg",
+      "PackagePath": "staticwebassets\\Uploads\\638345671035406295.jpg"
+    },
+    {
       "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\js\\signalr\\dist\\browser\\signalr.js",
       "PackagePath": "staticwebassets\\js\\signalr\\dist\\browser\\signalr.js"
     },

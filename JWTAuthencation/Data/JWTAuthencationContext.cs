@@ -41,7 +41,10 @@ namespace JWTAuthencation.Data
         public virtual DbSet<FutureFamily> FutureFamily { get; set; } = null!;
         public virtual DbSet<Workout> Workout { get; set; } = null!;
         public virtual DbSet<SleepHabit> SleepHabit { get; set; } = null!;
+        public virtual DbSet<Admin> Admin { get; set; } = null!;
+        //Procedure
         public virtual DbSet<UserInfo> GetUserProfile { get; set; } = null!;
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

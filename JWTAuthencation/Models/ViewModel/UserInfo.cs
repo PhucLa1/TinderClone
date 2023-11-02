@@ -52,5 +52,6 @@ namespace JWTAuthencation.Models.ViewModel
         public string? LiveAt { get; set; }
         [NotMapped]public List<string>? passion { get; set; }
         [NotMapped] public List<string>? languages { get; set; }
+        [NotMapped] public List<string>? photos { get; set; }
     }
 }

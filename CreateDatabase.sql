@@ -1,4 +1,4 @@
-﻿Use TinderClone
+Use TinderClone
 
 --Create table Users
 create table Users(
@@ -230,4 +230,10 @@ create table CallStatus(
 ID int identity(1,1) primary key,
 OfStatus tinyint default(1),
 CSName varchar(30)
+)
+create table Admin(
+ID int identity(1,1) primary key,
+OfStatus tinyint default(1),
+UserName nvarchar(100) not null,
+Pass varchar(100) not null
 )
