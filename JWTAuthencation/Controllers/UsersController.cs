@@ -288,7 +288,7 @@ namespace JWTAuthencation.Controllers
 				}
 
 
-				int countVirtualImages = gender == true ? 30 : 200;
+				int countVirtualImages = gender == true ? 73 : 200;
 				string Path = gender == true ? "Boys" : "Girls";
 				int genCountImages = random.Next(1, 9);
 				List<int> generatedImage = new List<int>();
