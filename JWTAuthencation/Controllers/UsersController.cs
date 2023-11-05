@@ -84,7 +84,7 @@ namespace JWTAuthencation.Controllers
 			var userProfile = _context.
 				GetAllUserProfile.FromSqlRaw("EXEC GetAllUserProfile")
 				.AsEnumerable().ToList();
-			foreach( var user in userProfile)
+			foreach (var user in userProfile)
 			{
 				var passion = passions.Where(e => e.UserId == user.ID).Select(e => e.Pname).ToList();
 				var language = languages.Where(e => e.UserId == user.ID).Select(e => e.Lname).ToList();
@@ -99,11 +99,61 @@ namespace JWTAuthencation.Controllers
 			return Ok(userProfile);
 		}
 
-		[HttpPost]
-		[Route("UploadFile")]
-		public async Task<IActionResult> UploadFile(IFormFile file)
+		[HttpPut]
+		[Route("UpdateUser")]
+		public async Task<IActionResult> UpdateUser(User user)
 		{
-			var res = await HandleImage.Upload(file);
+			if (user == null)
+			{
+				return NotFound("There are no data ");
+			}
+			else
+			{
+				if (user.Id == null)
+				{
+					return NotFound("Need ID user in body request");
+				}
+				else
+				{
+					var userOfRes = _context.Users.Where(e => e.Id == user.Id).FirstOrDefault();
+
+					//Update User
+					userOfRes.AboutUser = user.AboutUser;
+					userOfRes.Height = user.Height;
+					userOfRes.PurposeDateID = user.PurposeDateID;
+					userOfRes.ZodiacID = user.ZodiacID;
+					userOfRes.EducationID = user.EducationID;
+					userOfRes.FutureFamilyID = user.FutureFamilyID;
+					userOfRes.VacxinCovidID = user.VacxinCovidID;
+					userOfRes.PersonalityID = user.PersonalityID;
+					userOfRes.CommunicationID = user.CommunicationID;
+					userOfRes.LoveLanguageID = user.LoveLanguageID;
+					userOfRes.PetID = user.PetID;
+					userOfRes.AlcolholID = user.AlcolholID;
+					userOfRes.SmokeID = user.SmokeID;
+					userOfRes.WorkoutID = user.WorkoutID;
+					userOfRes.DietID = user.DietID;
+					userOfRes.SocialMediaID = user.SocialMediaID;
+					userOfRes.SleepHabitID = user.SleepHabitID;
+					userOfRes.SexsualOrientationID = user.SexsualOrientationID;
+					userOfRes.JobTitle = user.JobTitle;
+					userOfRes.Company = user.Company;
+					userOfRes.School = user.School;
+					userOfRes.LiveAt = user.LiveAt;
+
+					_context.Users.Update(userOfRes);
+					_context.SaveChanges();
+					return Ok("Update Successfully");
+				}
+			}
+		}
+
+
+		[HttpGet]
+		[Route("GetByID")]
+		public async Task<IActionResult> GetByID(int id)
+		{
+			var res = _context.Users.Where(e => e.Id == id).FirstOrDefault();
 			return Ok(res);
 		}
 
@@ -206,11 +256,23 @@ namespace JWTAuthencation.Controllers
 
 				//Them Passion va Languages
 
+				List<short> generatedPas = new List<short>();
+				List<short> generatedLan = new List<short>();
 				for (int j = 1; j <= 5; j++)
 				{
-					short genCountPassions = (short)random.Next(countPassions + 1);
-					short genCountLanguages = (short)random.Next(countLanuages + 1);
+					short genCountPassions;
+					do
+					{
+						genCountPassions = (short)random.Next(countPassions + 1);
+					} while (generatedPas.Contains(genCountPassions));
+					short genCountLanguages;
+					do
+					{
+						genCountLanguages = (short)random.Next(countLanuages + 1);
+					} while (generatedLan.Contains(genCountLanguages));
 
+					generatedPas.Add(genCountPassions);
+					generatedLan.Add(genCountLanguages);
 
 					UsersLanguages uL = new UsersLanguages();
 					UsersPassion uP = new UsersPassion();
@@ -226,23 +288,22 @@ namespace JWTAuthencation.Controllers
 				}
 
 
-				int countVirtualImages = 30;
+				int countVirtualImages = gender == true ? 30 : 200;
+				string Path = gender == true ? "Boys" : "Girls";
 				int genCountImages = random.Next(1, 9);
+				List<int> generatedImage = new List<int>();
 				for (int j = 1; j <= genCountImages; j++)
 				{
 					Photo photo = new Photo();
 					photo.UserId = lastID;
-					int image = random.Next(1, countVirtualImages); //Lấy số ảnh từ 1 đến 30
-					string imagePath = "";
-					if (gender == true) //Tức là nam
+					int image;  //Lấy số ảnh từ 1 đến 30
+					do
 					{
-						imagePath = $"Boys/{image}.jpg";
-					}
-					else
-					{
-						imagePath = $"Girls/{image}.jpg";
-					}
-					photo.ImagePath = imagePath;
+						image = random.Next(1, countVirtualImages);
+					} while (generatedImage.Contains(image));
+					generatedImage.Add(image);
+
+					photo.ImagePath = $"{Path}/{image}.jpg";
 					photos.Add(photo);
 				}
 				//Cong them ID vao
@@ -259,7 +320,5 @@ namespace JWTAuthencation.Controllers
 
 			return Ok("Add successfully " + numberOfUser + " user");
 		}
-
-
 	}
 }

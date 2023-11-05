@@ -280,8 +280,10 @@ namespace JWTAuthencation.Controllers
             }
             else
             {
+                int lastID = _context.Users.Count() + 1;
                 //Thêm người dùng
-                _context.Users.Add(user);
+                user.SettingId = lastID;
+				_context.Users.Add(user);
 
                 //Thêm setting
                 Setting setting = new Setting() { };
@@ -292,6 +294,10 @@ namespace JWTAuthencation.Controllers
                 List<UsersPassion> passions = new List<UsersPassion>();
                 UsersLanguages language = new UsersLanguages() { };
                 UsersPassion passion = new UsersPassion() { };
+
+                language.UserId = lastID;
+                passion.UserId = lastID;
+
                 for (int i = 0; i < 5; i++)
                 {
                     languages.Add(language);

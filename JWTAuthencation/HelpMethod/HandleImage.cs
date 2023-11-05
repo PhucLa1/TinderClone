@@ -43,5 +43,5 @@ namespace JWTAuthencation.HelpMethod
 
             return new FileStreamResult(stream, mimeType);
         }
-    }
+	}
 }
