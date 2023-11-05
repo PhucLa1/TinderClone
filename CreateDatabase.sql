@@ -37,6 +37,9 @@ JobTitle varchar(255),
 Company nvarchar(max),
 School nvarchar(255),
 LiveAt nvarchar(255),
+Token nvarchar(255),
+TokenCreated Datetime,
+TokenExpires Datetime,
 OfStatus tinyint default(1)
 )
 

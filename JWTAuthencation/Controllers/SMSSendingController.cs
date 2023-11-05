@@ -1,9 +1,11 @@
-﻿using JWTAuthencation.Models.OtherModels;
+﻿using Humanizer;
+using JWTAuthencation.Models.OtherModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
+using Twilio.TwiML.Messaging;
 
 namespace JWTAuthencation.Controllers
 {
@@ -19,16 +21,15 @@ namespace JWTAuthencation.Controllers
 
         [HttpPost]
         [Route("SendText")]
+        //Sau 30s sẽ phải reset lại cái mã
         public async Task<IActionResult> SendText(string phoneNumber)
         {
             TwilioClient.Init(_configuration["Twilio:AccountSID"], _configuration["Twilio:AuthToken"]);
-
-            var message = MessageResource.Create(
-                body: GenerateOTP(),
-                from: new Twilio.Types.PhoneNumber("+18186394920"),
-                to: new Twilio.Types.PhoneNumber("+84" + phoneNumber)
-            );
-
+                var message = MessageResource.Create(
+                    body: GenerateOTP(),
+                    from: new Twilio.Types.PhoneNumber("+18186394920"),
+                    to: new Twilio.Types.PhoneNumber("+84" + phoneNumber)
+                );
             return Ok("return successfully " + message.Sid + "content is "+ message.Body);
         }
 
