@@ -47,11 +47,14 @@ namespace JWTAuthencation.Data
 		//Procedure
 		public virtual DbSet<UserInfo> GetUserProfile { get; set; } = null!;
 		public virtual DbSet<UserInfo> GetAllUserProfile { get; set; } = null!;
+        public virtual DbSet<MessCount> GetCountMess { get; set; } = null!;
+		public virtual DbSet<UserRegis> getCountUser { get; set; } = null!;
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserInfo>()
             .HasKey(u => u.ID);
+
         }
 
 

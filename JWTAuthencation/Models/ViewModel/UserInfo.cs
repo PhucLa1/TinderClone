@@ -12,7 +12,7 @@ namespace JWTAuthencation.Models.ViewModel
         public string? TagName { get; set; }
         public int? LikeAmount { get; set; }
         public string? AboutUser { get; set; }
-
+        public int? Age { get; set; }
         public string? PurposeDate { get; set; }
         public bool? Gender { get; set; }
 

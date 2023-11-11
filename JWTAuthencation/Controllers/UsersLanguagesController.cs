@@ -15,6 +15,17 @@ namespace JWTAuthencation.Controllers
 		{
 			_context = context;
 		}
+		[HttpGet]
+		[Route("GetByUserId")]
+		public async Task<IActionResult> GetByUserId(int userId)
+		{
+			var res = _context.UsersLanguages.Where(e => e.UserId == userId && e.LanguageId != null).ToList();
+			if (res.Count == 0)
+			{
+				return NotFound("Not found data");
+			}
+			return Ok(res);
+		}
 
 		[HttpPut]
 		[Route("UpdateLanguages")]

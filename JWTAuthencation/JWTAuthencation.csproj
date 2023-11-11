@@ -44,7 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\Uploads\638323920652001181.jpg" />
     <None Include="wwwroot\Uploads\638323926381591110.jpg" />
   </ItemGroup>
 

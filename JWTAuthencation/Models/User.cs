@@ -42,10 +42,12 @@ namespace JWTAuthencation.Models
         public string? School { get; set; }
         public string? LiveAt { get; set; }
         public byte? OfStatus { get; set; }
+        public DateTime? DOB { get; set; }
+        public DateTime? RegisDate { get; set; }
 
-        //Not in relationship
-        
-        public string? Token { get; set; }
+		//Not in relationship
+
+		public string? Token { get; set; }
         public DateTime? TokenCreated { get; set; }
         public DateTime? TokenExpires { get; set; }
     }

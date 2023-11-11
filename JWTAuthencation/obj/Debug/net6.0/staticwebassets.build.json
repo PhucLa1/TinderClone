@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "QIdetS0nfJsIzPnS2eIUEDM3ijGuj5g7YoOTBPlr6UI=",
+  "Hash": "Dm/NZRxnbCrxwP6xmsQoDPvOXqpUMQzQ8nlAKL6Iyh4=",
   "Source": "JWTAuthencation",
   "BasePath": "_content/JWTAuthencation",
   "Mode": "Default",
@@ -1071,23 +1071,6 @@
       "OriginalItemSpec": "wwwroot\\js\\signalr\\dist\\browser\\signalr.min.js"
     },
     {
-      "Identity": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638323920652001181.jpg",
-      "SourceId": "JWTAuthencation",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\",
-      "BasePath": "_content/JWTAuthencation",
-      "RelativePath": "Uploads/638323920652001181.jpg",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\Uploads\\638323920652001181.jpg"
-    },
-    {
       "Identity": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638323926381591110.jpg",
       "SourceId": "JWTAuthencation",
       "SourceType": "Discovered",
@@ -1171,6 +1154,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Uploads\\638345671035406295.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638352552332987104.png",
+      "SourceId": "JWTAuthencation",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\",
+      "BasePath": "_content/JWTAuthencation",
+      "RelativePath": "Uploads/638352552332987104.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Uploads\\638352552332987104.png"
     },
     {
       "Identity": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\Boys\\1.jpg",

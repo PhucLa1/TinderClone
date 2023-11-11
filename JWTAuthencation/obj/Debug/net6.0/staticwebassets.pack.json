@@ -1,10 +1,6 @@
 {
   "Files": [
     {
-      "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638323920652001181.jpg",
-      "PackagePath": "staticwebassets\\Uploads\\638323920652001181.jpg"
-    },
-    {
       "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638323926381591110.jpg",
       "PackagePath": "staticwebassets\\Uploads\\638323926381591110.jpg"
     },
@@ -23,6 +19,10 @@
     {
       "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638345671035406295.jpg",
       "PackagePath": "staticwebassets\\Uploads\\638345671035406295.jpg"
+    },
+    {
+      "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\638352552332987104.png",
+      "PackagePath": "staticwebassets\\Uploads\\638352552332987104.png"
     },
     {
       "Id": "C:\\Users\\Hong Phuc\\source\\repos\\TinderClone\\JWTAuthencation\\wwwroot\\Uploads\\Boys\\1.jpg",

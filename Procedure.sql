@@ -9,6 +9,12 @@ BEGIN
         U.TagName,
         U.LikeAmount,
         U.AboutUser,
+        DATEDIFF(YEAR, U.DOB, GETDATE()) - 
+        CASE WHEN (MONTH(U.DOB) > MONTH(GETDATE()) OR 
+                  (MONTH(U.DOB) = MONTH(GETDATE()) AND DAY(U.DOB) > DAY(GETDATE())))
+            THEN 1
+            ELSE 0
+        END  as 'Age',
         UP.PDName as 'PurposeDate',
         U.Gender,
         SO.SOName as 'SexsualOrientation',
@@ -52,6 +58,7 @@ BEGIN
 END
 
 
+
 alter PROCEDURE GetAllUserProfile
 AS
 BEGIN
@@ -61,6 +68,13 @@ BEGIN
         U.TagName,
         U.LikeAmount,
         U.AboutUser,
+DATEDIFF(YEAR, U.DOB, GETDATE()) - 
+        CASE WHEN (MONTH(U.DOB) > MONTH(GETDATE()) OR 
+                  (MONTH(U.DOB) = MONTH(GETDATE()) AND DAY(U.DOB) > DAY(GETDATE())))
+            THEN 1
+            ELSE 0
+        END  as 'Age',
+
         UP.PDName as 'PurposeDate',
         U.Gender,
         SO.SOName as 'SexsualOrientation',

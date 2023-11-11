@@ -15,8 +15,17 @@ namespace JWTAuthencation.Hubs
             // Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
             await Clients.All.SendAsync("CameraState", userId, isCameraOn);
         }
+		public async Task SomeMethod()
+		{
+			// Lấy ConnectionId của kết nối hiện tại
+			string connectionId = Context.ConnectionId;
 
-        public async Task AudioStateChange(string userId, bool isAudioOn)
+			// Sử dụng connectionId theo nhu cầu của bạn
+			// Ví dụ: Gửi thông điệp đến kết nối hiện tại
+			await Clients.Client(connectionId).SendAsync("Hello", "Xin chào từ server!"+ connectionId);
+		}
+
+		public async Task AudioStateChange(string userId, bool isAudioOn)
         {
             // Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
             await Clients.All.SendAsync("AudioState", userId, isAudioOn);
@@ -25,7 +34,6 @@ namespace JWTAuthencation.Hubs
         //Gửi trạng thái trước khi gọi điện
         public async Task CallWait(string userId)
         {
-            // Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
             await Clients.All.SendAsync("CallWaitUser", userId);
         }
         public async Task CallAnswer(string userId,bool Ans)

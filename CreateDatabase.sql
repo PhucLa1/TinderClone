@@ -238,5 +238,8 @@ create table Admin(
 ID int identity(1,1) primary key,
 OfStatus tinyint default(1),
 UserName nvarchar(100) not null,
-Pass varchar(100) not null
+Pass varchar(100) not null,
+Token nvarchar(255),
+TokenCreated Datetime,
+TokenExpires Datetime
 )

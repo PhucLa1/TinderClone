@@ -13,6 +13,7 @@ using JWTAuthencation.Models.ViewModel;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Humanizer;
 
 namespace JWTAuthencation.Controllers
 {
@@ -98,6 +99,7 @@ namespace JWTAuthencation.Controllers
 
 			return Ok(userProfile);
 		}
+
 
 		[HttpPut]
 		[Route("UpdateUser")]
@@ -225,6 +227,37 @@ namespace JWTAuthencation.Controllers
 				int genNames = random.Next(countInforLogin);
 				int genPass = random.Next(countInforLogin);
 
+				//Gen ngày tháng ảo cho phần sinh nhật
+				int randomYear = random.Next(1999, 2006);
+				int randomMonth = random.Next(1, 13);
+				int daysInMonth = DateTime.DaysInMonth(randomYear, randomMonth);
+				int randomDay = random.Next(1, daysInMonth + 1);
+				DateTime DOB = new DateTime(randomYear, randomMonth, randomDay);
+
+				//Gen ngày tháng ảo cho phần đăng kí
+				int yearOfRegis = random.Next(2021, 2024);
+				DateTime RegisDate = new DateTime(yearOfRegis, randomMonth, randomDay);
+
+				//Phần tính tuổi
+				int Age = DateTime.Today.Year - user.DOB.Value.Year; //DateOfBirth must not be null. 
+				if (user.DOB.Value.Date > DateTime.Today.AddYears(-Age))
+				{
+					Age--; //Age of partner 
+				}
+
+				//Lấy ageMax và ageMin
+				int AgeMax = Age + 6;
+				int AgeMin = Age - 4;
+
+				//Lấy latitude và longtitude (kinh độ và vĩ độ chỉ ở trong Việt Nam)
+				double latitudeMin = 8.0;
+				double latitudeMax = 23.0;
+				double latitude = random.NextDouble() * (latitudeMax - latitudeMin) + latitudeMin;
+
+				double longtitudeMin = 102.0;
+				double longtitudeMax = 109.0;
+				double longtitude = random.NextDouble() * (longtitudeMax - longtitudeMin) + longtitudeMin;
+
 				//Xử lí thêm dữ liệu cho Users
 				user.SexsualOrientationID = genCountSO == 0 ? null : genCountSO;
 				user.CommunicationID = genCountC == 0 ? null : genCountC;
@@ -249,8 +282,17 @@ namespace JWTAuthencation.Controllers
 				user.FullName = HandleVirtualData.names[genNames];
 				user.UserName = HandleVirtualData.usernames[genNames];
 				user.Pass = HandleVirtualData.passwords[genPass];
+				user.DOB = DOB;
+				user.RegisDate = RegisDate;
 
-				//Them du lieu vao DB
+
+				//Thêm dữ liệu cho Setting
+				setting.AgeMax = AgeMax;
+				setting.AgeMin = AgeMin;
+				setting.Latitute = latitude;
+				setting.Longtitute = longtitude;
+				setting.DistancePreference = 80;
+				//Them du lieu vao mảng
 				users.Add(user);
 				settings.Add(setting);
 
