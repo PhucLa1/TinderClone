@@ -137,6 +137,7 @@ namespace JWTAuthencation.Controllers
 					userOfRes.DietID = user.DietID;
 					userOfRes.SocialMediaID = user.SocialMediaID;
 					userOfRes.SleepHabitID = user.SleepHabitID;
+					userOfRes.Gender = user.Gender;
 					userOfRes.SexsualOrientationID = user.SexsualOrientationID;
 					userOfRes.JobTitle = user.JobTitle;
 					userOfRes.Company = user.Company;

@@ -83,7 +83,7 @@ namespace JWTAuthencation.Controllers
 					return BadRequest("Invalid data");
 				}
 				var result = _context.Photo.Where(e => e.UserId == photo.UserId).Count();
-				if (result > 9)
+				if (result >= 9)
                 {
 					return BadRequest("cannot update more image");
 				}

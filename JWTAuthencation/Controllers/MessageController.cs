@@ -80,5 +80,17 @@ namespace JWTAuthencation.Controllers
             var res = _context.GetCountMess.FromSqlRaw("EXEC GetCountMess @Date", new SqlParameter("Date", "2023-11-05")).AsEnumerable().ToList();
             return Ok(res);
         }
-    }
+
+		[HttpGet]
+		[Route("GetMessByUserID")]
+		public async Task<IActionResult> GetMessByUserID(int userId,int toID)
+		{
+			var res = _context.Mess.
+				Where(e => (e.SendUserId == userId && e.ReceiveUserId ==toID)  || (e.ReceiveUserId == userId && e.SendUserId ==toID)).
+				OrderByDescending(e => e.SendTime).
+				ToList();
+			//Không có chuyện nó res bị rỗng
+			return Ok(res);
+		}
+	}
 }

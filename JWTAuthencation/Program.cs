@@ -20,7 +20,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigin",
         builder => builder
-            .WithOrigins("http://127.0.0.1:5500", "http://localhost:3000", "https://localhost:3000") // Điền vào tên miền của dự án giao diện của bạn
+            .WithOrigins("http://127.0.0.1:5500", "https://localhost:3000") // Điền vào tên miền của dự án giao diện của bạn
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials() // Cho phép sử dụng credentials (cookies, xác thực)
@@ -59,7 +59,7 @@ builder.Services.AddSignalR(options =>
 {
     options.EnableDetailedErrors = true;
 });
-//builder.Services.AddSignalRRTC();
+
 
 builder.Services.AddSwaggerGen(c =>
 {

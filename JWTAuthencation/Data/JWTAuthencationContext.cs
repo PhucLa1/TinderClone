@@ -13,7 +13,7 @@ namespace JWTAuthencation.Data
         public virtual DbSet<Call> Call { get; set; } = null!;
         public virtual DbSet<CallStatus> CallStatus { get; set; } = null!;
         public virtual DbSet<Languages> Languages { get; set; } = null!;
-        public virtual DbSet<Like> Like { get; set; } = null!;
+        public virtual DbSet<Like> Likes { get; set; } = null!;
         public virtual DbSet<Mess> Mess { get; set; } = null!;
         public virtual DbSet<Passion> Passion { get; set; } = null!;
         public virtual DbSet<Permission> Permission { get; set; } = null!;

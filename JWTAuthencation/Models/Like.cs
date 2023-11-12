@@ -7,8 +7,8 @@ namespace JWTAuthencation.Models
     {
         public int Id { get; set; }
         public byte? OfStatus { get; set; }
-        public int? LikeUserId { get; set; }
-        public int? LikedUserId { get; set; }
+        public int LikeUserId { get; set; }
+        public int LikedUserId { get; set; }
         public DateTime? LikeDate { get; set; }
         public bool? Matches { get; set; }
     }
