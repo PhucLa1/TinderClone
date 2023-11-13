@@ -6,6 +6,7 @@ namespace JWTAuthencation.Data
 {
     public class JWTAuthencationContext : DbContext
     {
+        public JWTAuthencationContext() { }
         public JWTAuthencationContext(
             DbContextOptions<JWTAuthencationContext> options):base(options)
         {}

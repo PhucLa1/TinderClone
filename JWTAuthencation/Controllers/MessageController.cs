@@ -87,7 +87,7 @@ namespace JWTAuthencation.Controllers
 		{
 			var res = _context.Mess.
 				Where(e => (e.SendUserId == userId && e.ReceiveUserId ==toID)  || (e.ReceiveUserId == userId && e.SendUserId ==toID)).
-				OrderByDescending(e => e.SendTime).
+				OrderBy(e => e.SendTime).
 				ToList();
 			//Không có chuyện nó res bị rỗng
 			return Ok(res);

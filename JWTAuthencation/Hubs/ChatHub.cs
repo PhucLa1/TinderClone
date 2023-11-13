@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using JWTAuthencation.Data;
+using Microsoft.AspNetCore.SignalR;
 
 namespace JWTAuthencation.Hubs
 {
     public class ChatHub : Hub
     {
         private Dictionary<int, string> infoConnect = new Dictionary<int, string>();
-        public async Task SendMessage(int user, string message)
-        {
-            
-            await Clients.Client(infoConnect[user]).SendAsync("ReceiveMessage", user, message);
+		private readonly JWTAuthencationContext _context;
+		public ChatHub(JWTAuthencationContext context)
+		{
+			_context = context;
+		}
+		public async Task SendMessage(int fromID,int toID, string message)
+        {           
+            await Clients.Client(infoConnect[toID]).SendAsync("ReceiveMessage", fromID,toID,message);
         }
         //Gửi trạng thái trong khi đang gọi điện
         public async Task CameraStateChange(string userId, bool isCameraOn)
