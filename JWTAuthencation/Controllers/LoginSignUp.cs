@@ -58,21 +58,21 @@ namespace JWTAuthencation.Controllers
                 return BadRequest("No data ");
             }
         }
-        [HttpPost]
+        [HttpGet]
         [Route("LoginAdminPage")]
-        public async Task<IActionResult> LoginAdmin(Admin admin)
+        public async Task<IActionResult> LoginAdmin(string user,string pass)
         {
 
-            if (admin != null)
+            if (user != null && pass != null)
             {
-                var Result = _context.Admin.Where(e => e.UserName == admin.UserName && e.Pass == admin.Pass).FirstOrDefault();
+                var Result = _context.Admin.Where(e => e.UserName == user && e.Pass == pass).FirstOrDefault();
                 if (Result != null)
                 {
                     var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("Id", Result.ID.ToString()),
+                        //new Claim("Id", Result.ID.ToString()),
                         new Claim("UserName", Result.UserName),
                         new Claim("Password", Result.Pass),
                         //new Claim("Height", Result.Height.ToString())
@@ -94,7 +94,7 @@ namespace JWTAuthencation.Controllers
                     var refreshToken = GenerateRefreshToken();
                     SetRefreshTokenForAdmin(refreshToken, Result);
 
-                    return Ok(admin);
+                    return Ok();
                 }
                 else
                 {
@@ -188,7 +188,7 @@ namespace JWTAuthencation.Controllers
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, Result);
 
-            return new { token = encrypterToken, username = Result.UserName };
+            return new { token = encrypterToken, username = Result.Id };
         }
 
         private RefreshToken GenerateRefreshToken()

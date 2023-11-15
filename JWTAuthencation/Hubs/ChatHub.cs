@@ -1,4 +1,5 @@
 ﻿using JWTAuthencation.Data;
+using JWTAuthencation.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace JWTAuthencation.Hubs
@@ -7,13 +8,31 @@ namespace JWTAuthencation.Hubs
     {
         private Dictionary<int, string> infoConnect = new Dictionary<int, string>();
 		private readonly JWTAuthencationContext _context;
-		public ChatHub(JWTAuthencationContext context)
+        private readonly IHubContext<ChatHub> _hubContext;
+        public ChatHub(JWTAuthencationContext context, IHubContext<ChatHub> hubContext)
 		{
 			_context = context;
-		}
+            _hubContext = hubContext;
+        }
 		public async Task SendMessage(int fromID,int toID, string message)
-        {           
-            await Clients.Client(infoConnect[toID]).SendAsync("ReceiveMessage", fromID,toID,message);
+        {
+            Mess mess = new Mess()
+            {
+                SendUserId = fromID,
+                ReceiveUserId = toID,
+                Content = message,
+                SendTime = DateTime.UtcNow,
+            };
+            _context.Mess.Add(mess);
+            _context.SaveChanges();
+            try
+            {
+                await Clients.Client(infoConnect[toID]).SendAsync("ReceiveMessage", fromID, toID, message);
+            }catch (Exception ex)
+            {
+                throw new Exception();
+            }
+            
         }
         //Gửi trạng thái trong khi đang gọi điện
         public async Task CameraStateChange(string userId, bool isCameraOn)
@@ -25,10 +44,14 @@ namespace JWTAuthencation.Hubs
 		{
 			// Lấy ConnectionId của kết nối hiện tại
 			string connectionId = Context.ConnectionId;
-			infoConnect.Add(userID, connectionId);
-
-			// Sử dụng connectionId theo nhu cầu của bạn
-			// Ví dụ: Gửi thông điệp đến kết nối hiện tại
+            if(infoConnect.ContainsKey(userID))
+            {
+                infoConnect[userID] = connectionId;
+            }
+            else
+            {
+                infoConnect.Add(userID, connectionId);
+            }			
 			await Clients.Client(connectionId).SendAsync("Connect", "Xin chào từ server!, kết nối thành công tới clients "+ connectionId);
 		}
 
@@ -53,5 +76,5 @@ namespace JWTAuthencation.Hubs
 			// Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
 			await Clients.All.SendAsync("CallAnswerUser", userId, from,to);
 		}
-	}
+    }
 }

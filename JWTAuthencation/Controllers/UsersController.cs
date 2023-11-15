@@ -240,8 +240,8 @@ namespace JWTAuthencation.Controllers
 				DateTime RegisDate = new DateTime(yearOfRegis, randomMonth, randomDay);
 
 				//Phần tính tuổi
-				int Age = DateTime.Today.Year - user.DOB.Value.Year; //DateOfBirth must not be null. 
-				if (user.DOB.Value.Date > DateTime.Today.AddYears(-Age))
+				int Age = DateTime.Today.Year - DOB.Year; //DateOfBirth must not be null. 
+				if (DOB.Date > DateTime.Today.AddYears(-Age))
 				{
 					Age--; //Age of partner 
 				}

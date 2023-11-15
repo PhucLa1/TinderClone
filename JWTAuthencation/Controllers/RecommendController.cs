@@ -69,35 +69,27 @@ namespace JWTAuthencation.Controllers
 		}
 		private ConciseUser CUser(int userId)
 		{
-			var user = _context.Users.FirstOrDefault(x => x.Id == userId);
-			var userSetting = _context.Setting.FirstOrDefault(x => x.Id == userId);
-
+			var user = _context.Users.Where(x => x.Id == userId).FirstOrDefault();
+			var userSetting = _context.Setting.Where(x => x.Id == userId).FirstOrDefault();
 			if (user == null || userSetting == null)
 			{
 				throw new Exception("Failed to read database.");
 			}
-
-			int Age = DateTime.Today.Year - user.DOB.Value.Year;
-
+			int Age = DateTime.Today.Year - user.DOB.Value.Year; //DateOfBirth must not be null. 
 			if (user.DOB.Value.Date > DateTime.Today.AddYears(Age))
 				Age--; //Age of partner 
-
 			ConciseUser conciseUser = new ConciseUser()
 			{
-				Latitude = userSetting.Latitute.HasValue ? userSetting.Latitute.Value : 1.0,
-				Longtitude = userSetting.Longtitute.HasValue ? userSetting.Longtitute.Value : 1.0,
+				Latitude = userSetting.Latitute.Value ==null?1.0:2.0,
+				Longtitude = userSetting.Longtitute.Value == null ? 1.0 : 2.0,
 				Age = Age,
-				AgeMax = userSetting.AgeMax.HasValue ? userSetting.AgeMax.Value : 1, //Cann't null
-				AgeMin = userSetting.AgeMin.HasValue ? userSetting.AgeMin.Value : 1, //Cann't null
-				MaxDistance = userSetting.DistancePreference.HasValue ? userSetting.DistancePreference.Value * 621 : 1,
-				SexO = user.SexsualOrientationID.HasValue ? user.SexsualOrientationID.Value : 2,
-				GlobalMatch = userSetting.GlobalMatches.HasValue ? userSetting.GlobalMatches.Value == 1 : true,
-				Language = _context.UsersLanguages
-							.Where(x => x.Id == userId)
-							.Select(x => x.LanguageId.HasValue ? x.LanguageId.Value : 0)
-							.ToHashSet()
+				AgeMax = userSetting.AgeMax.Value == null ? 1 : 2, //Cann't null
+				AgeMin = userSetting.AgeMin.Value == null ? 1 : 2, //Cann't null
+				MaxDistance = userSetting.DistancePreference == null ? 1 : 2,
+				SexO = (user.SexsualOrientationID == null) ? 2 : user.SexsualOrientationID.Value,
+				GlobalMatch = (userSetting.GlobalMatches == null) ? true : (userSetting.GlobalMatches == 1),
+				Language = _context.UsersLanguages.Where(x => x.Id == userId).Select(x => x.LanguageId.Value).ToHashSet()
 			};
-
 			return conciseUser;
 		}
 		[HttpGet("RecommendList")]
