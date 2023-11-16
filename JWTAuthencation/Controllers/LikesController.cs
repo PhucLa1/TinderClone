@@ -22,55 +22,43 @@ namespace JWTAuthencation.Controllers
 			var likes = _context.Likes
 				.Where(e => (e.LikeUserId == userId || e.LikedUserId == userId) && e.Matches == true)
 				.OrderByDescending(e => e.LikeDate)
+				.Select(e => e.LikeUserId == userId ? e.LikedUserId : e.LikeUserId)
 				.ToList();
 
 			var mess = _context.Mess
 				.Where(e => e.SendUserId == userId || e.ReceiveUserId == userId)
-				.Select(e => e.SendUserId == userId ? e.ReceiveUserId : e.SendUserId)
-				.ToList();
-
-			var users = _context.Users.ToList();
-			var photos = _context.Photo.ToList();
-
-			var uNMs = likes
-				.Where(item => !mess.Contains(item.LikeUserId) && !mess.Contains(item.LikedUserId))
-				.Select(item => new UserNotMess
-				{
-					UserID = item.LikeUserId == userId ? item.LikedUserId : item.LikeUserId,
-					ImagePath = "https://localhost:7251/Uploads/" + photos.FirstOrDefault(e => e.UserId == item.LikeUserId)?.ImagePath,
-					UserName = users.FirstOrDefault(e => e.Id == item.LikeUserId)?.UserName
-				})
-				.ToList();
-
-			return Ok(uNMs);
+                .GroupBy(e => e.SendUserId == userId ? e.ReceiveUserId : e.SendUserId)
+				.Select(e =>  e.Key )
+                .ToList();
+			var uNMs = likes.Where(e => !mess.Contains(e)).Select(e => new UserNotMess
+			{
+				UserID = e,
+				ImagePath = "https://localhost:7251/Uploads/" + _context.Photo.Where(x => x.UserId == e).Select(e => e.ImagePath).FirstOrDefault(),
+				UserName = _context.Users.Where(x => x.Id == e).Select(e => e.UserName).FirstOrDefault()
+			}).ToList();
+            return Ok(uNMs);
 		}
 		[HttpGet]
 		[Route("GetLikeMess")]
 		public async Task<IActionResult> getLikeMess(int userId) //Get user not message
 		{
-
-
 			var LastMessages = _context.Mess
 				.Where(e => e.SendUserId == userId || e.ReceiveUserId == userId)
-				.GroupBy(e => e.SendUserId != userId ? e.SendUserId : e.ReceiveUserId)
-				.Select(group => new
-				{
-					UserID = group.Key ,
-					LastMessage = group.OrderByDescending(e => e.Id).Select(e => new {content= e.Content,sendId = e.SendUserId,sendTime = e.SendTime }).FirstOrDefault()
-				})
+                .OrderByDescending(e => e.SendTime)
+                .GroupBy(e => e.SendUserId != userId ? e.SendUserId : e.ReceiveUserId)				
 				.ToList();
 
 
-			var uMs = LastMessages.OrderByDescending(e => e.LastMessage.sendTime).Select(item => new UserMess
-			{
-				UserID = item.UserID,
-				ImagePath = "https://localhost:7251/Uploads/"+ _context.Photo.Where(e => e.UserId == item.UserID).Select(e => e.ImagePath).FirstOrDefault(),
-				UserName = _context.Users.Where(e => e.Id == item.UserID).Select(e => e.UserName).FirstOrDefault(),
-				LastMess = LastMessages.Where(e => e.UserID == item.UserID).Select(e => e.LastMessage.content).FirstOrDefault(),
-				LastUserChat = LastMessages.Where(e => e.UserID == item.UserID).Select(e => e.LastMessage.sendId).FirstOrDefault()
-			}).ToList();
+			//var uMs = LastMessages.OrderByDescending(e => e.LastMessage.sendTime).Select(item => new UserMess
+			//{
+			//	UserID = item.UserID,
+			//	ImagePath = "https://localhost:7251/Uploads/"+ _context.Photo.Where(e => e.UserId == item.UserID).Select(e => e.ImagePath).FirstOrDefault(),
+			//	UserName = _context.Users.Where(e => e.Id == item.UserID).Select(e => e.UserName).FirstOrDefault(),
+			//	LastMess = LastMessages.Where(e => e.UserID == item.UserID).Select(e => e.LastMessage.content).FirstOrDefault(),
+			//	LastUserChat = LastMessages.Where(e => e.UserID == item.UserID).Select(e => e.LastMessage.sendId).FirstOrDefault()
+			//}).ToList();
 
-			return Ok(uMs);
+			return Ok(LastMessages);
 		}
 
     }
