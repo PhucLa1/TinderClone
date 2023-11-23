@@ -44,10 +44,11 @@ namespace JWTAuthencation.Models
         public byte? OfStatus { get; set; }
         public DateTime? DOB { get; set; }
         public DateTime? RegisDate { get; set; }
+        public DateTime? LastLogin { get; set; }
 
-		//Not in relationship
+        //Not in relationship
 
-		public string? Token { get; set; }
+        public string? Token { get; set; }
         public DateTime? TokenCreated { get; set; }
         public DateTime? TokenExpires { get; set; }
     }

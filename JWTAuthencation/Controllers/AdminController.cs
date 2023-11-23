@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace JWTAuthencation.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -28,6 +28,7 @@ namespace JWTAuthencation.Controllers
             }
             return Ok(res);
         }
+
 
         [HttpGet]
         [Route("GetByID")]
@@ -93,6 +94,18 @@ namespace JWTAuthencation.Controllers
             _context.Admin.Update(res);
             _context.SaveChanges();
             return Ok("Restore Successfull");
+        }
+
+        [HttpGet]
+        [Route("CheckPass")]
+        public async Task<IActionResult> CheckPass(int adminId,string pass)
+        {
+            var res = _context.Admin.Where(e => e.Pass == pass && e.ID == adminId).FirstOrDefault();
+            if(res == null)
+            {
+                return NotFound("Password donn't correct");
+            }
+            return Ok("Password correct");
         }
 
     }

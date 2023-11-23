@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace JWTAuthencation.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ZodiacController : ControllerBase

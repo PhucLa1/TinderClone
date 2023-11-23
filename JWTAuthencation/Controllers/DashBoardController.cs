@@ -1,10 +1,12 @@
-﻿using JWTAuthencation.Data;
+﻿using Humanizer;
+using JWTAuthencation.Data;
 using JWTAuthencation.Models;
 using JWTAuthencation.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 
 namespace JWTAuthencation.Controllers
@@ -138,5 +140,56 @@ namespace JWTAuthencation.Controllers
 			var res = _context.getCountUser.FromSqlRaw("EXEC getCountUser @startDate,@endDate", new SqlParameter("startDate", startDate), new SqlParameter("endDate", endDate)).AsEnumerable().ToList();
 			return Ok(res);
 		}
-	}
+
+		[HttpGet]
+		[Route("PaginationUser")]
+		public async Task<IActionResult> getPaginationUser(int draw, int start, int length)
+		{
+			var data = _context.
+                GetAllUserProfile.FromSqlRaw("EXEC GetAllUserProfile")
+                .AsEnumerable().ToList(); 
+			var totalRecords = data.Count();
+            var filteredRecords = totalRecords;
+			data = data.Skip(start).Take(length).ToList();
+			if (data.IsNullOrEmpty())
+			{
+                return Ok(new
+                {
+                    draw = draw,
+                    recordsTotal = totalRecords,
+                    recordsFiltered = filteredRecords,
+                    data = new List<object>(), // Trả về một danh sách trống nếu không có dữ liệu
+                    error = "No data in the table"
+                });
+            }
+            return Ok(new
+            {
+                draw = draw,
+                recordsTotal = totalRecords,
+                recordsFiltered = filteredRecords,
+                data = data
+            });
+        }
+
+		[HttpGet]
+		[Route("GetUserLastLoginFor30Days")]
+		public async Task<IActionResult> GetUserLastLoginFor30Days()
+		{
+			var res = _context.Users
+				.Where(e => e.LastLogin.Value.AddDays(90) < DateTime.UtcNow)
+				.OrderBy(e => e.LastLogin)
+				.Take(5)
+				.Select(e => new
+				{
+					id = e.Id,
+					FullName = e.FullName,
+					UserName = e.UserName,
+                    LastLoginDaysAgo = (DateTime.UtcNow - e.LastLogin.Value).Days,
+					PhotoImage = _context.Photo.Where(x => x.UserId == e.Id).Select(x => "https://localhost:7251/Uploads/" + x.ImagePath).FirstOrDefault()
+				})
+				.ToList();
+			return Ok(res);
+        }
+
+    }
 }

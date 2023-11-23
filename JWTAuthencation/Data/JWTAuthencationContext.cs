@@ -11,7 +11,7 @@ namespace JWTAuthencation.Data
             DbContextOptions<JWTAuthencationContext> options):base(options)
         {}
         public virtual DbSet<Block> Block { get; set; } = null!;
-        public virtual DbSet<Call> Call { get; set; } = null!;
+        public virtual DbSet<Call> Calls { get; set; } = null!;
         public virtual DbSet<CallStatus> CallStatus { get; set; } = null!;
         public virtual DbSet<Languages> Languages { get; set; } = null!;
         public virtual DbSet<Like> Likes { get; set; } = null!;

@@ -1,5 +1,6 @@
 ﻿using JWTAuthencation.Data;
 using JWTAuthencation.Models;
+using JWTAuthencation.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,14 @@ namespace JWTAuthencation.Controllers
                     Matches = false
                 };
                 _context.Likes.Add(like);
+                _context.SaveChanges();
+                UserNotMess uNM = new UserNotMess()
+                {
+                    UserID = LikedID,
+                    UserName = _context.Users.Where(e => e.Id == LikedID).Select(e => e.UserName).FirstOrDefault(),
+                    ImagePath = "https://localhost:7251/Uploads/" + _context.Photo.Where(x => x.UserId == LikedID).Select(e => e.ImagePath).FirstOrDefault(),
+                };
+                return Ok(uNM);
                 
             }
             else
@@ -34,9 +43,9 @@ namespace JWTAuthencation.Controllers
                 res.Matches = true;
                 res.LikeDate = DateTime.UtcNow;
                 _context.Likes.Update(res);
-            }
-            _context.SaveChanges();
-            return Ok("Like Successfully");
+                _context.SaveChanges();
+                return Ok("Like Successfully");
+            }  
         }
 
         [HttpGet]

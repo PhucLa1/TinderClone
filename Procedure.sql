@@ -58,7 +58,7 @@ BEGIN
 END
 
 
-
+//Get all user in database
 alter PROCEDURE GetAllUserProfile
 AS
 BEGIN
@@ -115,3 +115,55 @@ DATEDIFF(YEAR, U.DOB, GETDATE()) -
     LEFT JOIN SocialMedia AS SM ON U.SocialMediaID = SM.ID
     LEFT JOIN SleepHabit AS SH ON U.SleepHabitID = SH.ID
 END
+
+//Get count mess in one day
+alter procedure GetCountMess 
+@Date varchar(30)
+as
+begin
+WITH AllHours AS (
+  SELECT 0 AS Hour
+  UNION ALL SELECT 1
+  UNION ALL SELECT 2
+  UNION ALL SELECT 3
+  UNION ALL SELECT 4
+  UNION ALL SELECT 5
+  UNION ALL SELECT 6
+  UNION ALL SELECT 7
+  UNION ALL SELECT 8
+  UNION ALL SELECT 9
+  UNION ALL SELECT 10
+  UNION ALL SELECT 11
+  UNION ALL SELECT 12
+  UNION ALL SELECT 13
+  UNION ALL SELECT 14
+  UNION ALL SELECT 15
+  UNION ALL SELECT 16
+  UNION ALL SELECT 17
+  UNION ALL SELECT 18
+  UNION ALL SELECT 19
+  UNION ALL SELECT 20
+  UNION ALL SELECT 21
+  UNION ALL SELECT 22
+  UNION ALL SELECT 23
+)
+
+SELECT AllHours.Hour, COUNT(Mess.SendTime) AS MessageCount
+FROM AllHours
+LEFT JOIN Mess ON AllHours.Hour = DATEPART(HOUR, Mess.SendTime)
+WHERE CAST(Mess.SendTime AS DATE) = @Date OR Mess.SendTime IS NULL
+GROUP BY AllHours.Hour
+ORDER BY AllHours.Hour;
+end
+
+//Get user by regis date
+alter procedure getCountUser
+@startDate varchar(30), @endDate varchar(30)
+as 
+begin
+SELECT CONCAT(Month(RegisDate), '-', Year(RegisDate)) as 'Time', Count(*) as 'UserCount'
+FROM Users
+WHERE RegisDate >= @startDate AND RegisDate <= @endDate
+GROUP BY Month(RegisDate), Year(RegisDate);
+end
+

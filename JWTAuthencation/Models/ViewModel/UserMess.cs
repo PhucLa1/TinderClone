@@ -7,6 +7,6 @@
 		public string? UserName { get; set; }
         public string? LastMess { get; set; }
         public int? LastUserChat { get; set; }
-        public DateTime? Matches { get; set; }
+        public DateTime? SendTime { get; set; }
     }
 }

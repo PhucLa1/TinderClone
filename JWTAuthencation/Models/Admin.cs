@@ -8,7 +8,9 @@ namespace JWTAuthencation.Models
         public byte? OfStatus { get; set; }
         public string UserName { get; set; }
         public string Pass { get; set; }
-        
+        public string PhoneNumber { get; set; }
+
+
         public string? Token { get; set; }
         public DateTime? TokenCreated { get; set; }
         public DateTime? TokenExpires { get; set; }

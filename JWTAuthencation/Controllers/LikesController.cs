@@ -1,4 +1,5 @@
 ﻿using JWTAuthencation.Data;
+using JWTAuthencation.Models;
 using JWTAuthencation.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -40,26 +41,57 @@ namespace JWTAuthencation.Controllers
 		}
 		[HttpGet]
 		[Route("GetLikeMess")]
-		public async Task<IActionResult> getLikeMess(int userId) //Get user not message
+		public async Task<IActionResult> getLikeMess(int userId) //Get user message
 		{
 			var LastMessages = _context.Mess
 				.Where(e => e.SendUserId == userId || e.ReceiveUserId == userId)
-                .OrderByDescending(e => e.SendTime)
-                .GroupBy(e => e.SendUserId != userId ? e.SendUserId : e.ReceiveUserId)				
-				.ToList();
-
-
-			//var uMs = LastMessages.OrderByDescending(e => e.LastMessage.sendTime).Select(item => new UserMess
-			//{
-			//	UserID = item.UserID,
-			//	ImagePath = "https://localhost:7251/Uploads/"+ _context.Photo.Where(e => e.UserId == item.UserID).Select(e => e.ImagePath).FirstOrDefault(),
-			//	UserName = _context.Users.Where(e => e.Id == item.UserID).Select(e => e.UserName).FirstOrDefault(),
-			//	LastMess = LastMessages.Where(e => e.UserID == item.UserID).Select(e => e.LastMessage.content).FirstOrDefault(),
-			//	LastUserChat = LastMessages.Where(e => e.UserID == item.UserID).Select(e => e.LastMessage.sendId).FirstOrDefault()
-			//}).ToList();
-
-			return Ok(LastMessages);
+				.OrderByDescending(e => e.Id)
+                .GroupBy(e => e.SendUserId != userId ? e.SendUserId : e.ReceiveUserId)
+				.Select(group => group.OrderByDescending(e => e.SendTime).FirstOrDefault())
+                .ToList();
+			var res = LastMessages
+				.OrderByDescending(e => e.Id)
+				.Select(e => new
+				{
+					UserID = e.SendUserId != userId ? e.SendUserId : e.ReceiveUserId,
+					LastMessages = e.Content,
+					LastUserChat = e.SendUserId,
+					SendTime = e.SendTime
+				})
+				.Select(e => new UserMess
+				{
+					UserID = e.UserID,
+					ImagePath = "https://localhost:7251/Uploads/" + _context.Photo.Where(x => x.UserId == e.UserID).Select(e => e.ImagePath).FirstOrDefault(),
+					UserName = _context.Users.Where(x => x.Id == e.UserID).Select(e => e.UserName).FirstOrDefault(),
+					LastMess = e.LastMessages,
+					LastUserChat = e.LastUserChat,
+					SendTime = e.SendTime
+				}).ToList();
+			return Ok(res);
 		}
+		[HttpGet]
+		[Route("GetTitleForMess")]
+		public async Task<IActionResult> GetTitleForMess(int fromId, int toId)
+		{
+			var res = _context.Likes
+				.Where(e => (e.LikeUserId == fromId && e.LikedUserId == toId) || (e.LikeUserId == toId && e.LikedUserId == fromId))
+				.Select(e => new
+				{
+					Image = _context.Photo.Where(e => e.UserId == toId).Select(e => "https://localhost:7251/Uploads/" + e.ImagePath).FirstOrDefault(),
+					Name = _context.Users.Where(e => e.Id == toId).Select(e => e.FullName).FirstOrDefault(),
+					DayMatch = e.LikeDate
+				})
+				.FirstOrDefault();
+			return Ok(res);
+		}
+		[HttpGet]
+		[Route("GetCountLike")]
+		public async Task<IActionResult> GetCountLike(int userId)
+		{
+			var res = _context.Likes.Where(e => e.LikedUserId == userId && e.Matches == false).ToList().Count();
+			return Ok(res);
+		}
+
 
     }
 }

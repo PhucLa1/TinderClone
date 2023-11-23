@@ -35,7 +35,7 @@ namespace JWTAuthencation.Controllers
 
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("Login")]
         public async Task<IActionResult> Login(User user)
         {
@@ -94,7 +94,7 @@ namespace JWTAuthencation.Controllers
                     var refreshToken = GenerateRefreshToken();
                     SetRefreshTokenForAdmin(refreshToken, Result);
 
-                    return Ok();
+                    return Ok(Result.ID);
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace JWTAuthencation.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("FacebookLogin")]
         public async Task<IActionResult> FacebookLogin(string credential)
         {
@@ -188,7 +188,7 @@ namespace JWTAuthencation.Controllers
             var refreshToken = GenerateRefreshToken();
             SetRefreshToken(refreshToken, Result);
 
-            return new { token = encrypterToken, username = Result.Id };
+            return new { token = encrypterToken, userID = Result.Id };
         }
 
         private RefreshToken GenerateRefreshToken()

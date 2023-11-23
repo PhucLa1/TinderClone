@@ -160,7 +160,7 @@ namespace JWTAuthencation.Controllers
 			return Ok(res);
 		}
 
-		[HttpPost]
+		[HttpGet]
 		[Route("GenAutomaticallyUser")]
 		public async Task<IActionResult> GenAutoUser(int numberOfUser)
 		{
@@ -236,7 +236,7 @@ namespace JWTAuthencation.Controllers
 				DateTime DOB = new DateTime(randomYear, randomMonth, randomDay);
 
 				//Gen ngày tháng ảo cho phần đăng kí
-				int yearOfRegis = random.Next(2021, 2024);
+				int yearOfRegis = random.Next(2021, 2023);
 				DateTime RegisDate = new DateTime(yearOfRegis, randomMonth, randomDay);
 
 				//Phần tính tuổi
@@ -250,14 +250,22 @@ namespace JWTAuthencation.Controllers
 				int AgeMax = Age + 6;
 				int AgeMin = Age - 4;
 
-				//Lấy latitude và longtitude (kinh độ và vĩ độ chỉ ở trong Việt Nam)
-				double latitudeMin = 8.0;
-				double latitudeMax = 23.0;
+				//Lấy latitude và longtitude (kinh độ và vĩ độ chỉ ở trong Hà Nội)
+				double latitudeMin = 20.0;
+				double latitudeMax = 21.0;
 				double latitude = random.NextDouble() * (latitudeMax - latitudeMin) + latitudeMin;
 
-				double longtitudeMin = 102.0;
-				double longtitudeMax = 109.0;
+				double longtitudeMin = 105.0;
+				double longtitudeMax = 106.0;
 				double longtitude = random.NextDouble() * (longtitudeMax - longtitudeMin) + longtitudeMin;
+
+				//Gen ngày tháng ảo cho phần lần đăng nhập cuối cùng
+				//Ngày đăng nhập cuối cùng phải lớn hơn ngày đăng kí
+				DateTime LastLogin;
+                do
+				{
+					LastLogin = RegisDate.AddDays(random.Next(1, 400));
+				} while (LastLogin > DateTime.UtcNow);
 
 				//Xử lí thêm dữ liệu cho Users
 				user.SexsualOrientationID = genCountSO == 0 ? null : genCountSO;
@@ -285,6 +293,7 @@ namespace JWTAuthencation.Controllers
 				user.Pass = HandleVirtualData.passwords[genPass];
 				user.DOB = DOB;
 				user.RegisDate = RegisDate;
+				user.LastLogin = LastLogin;
 
 
 				//Thêm dữ liệu cho Setting

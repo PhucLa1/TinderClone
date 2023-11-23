@@ -21,7 +21,7 @@ namespace JWTAuthencation.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("SendText")]
         //Sau 30s sẽ phải reset lại cái mã
         public async Task<IActionResult> SendText(string phoneNumber)
@@ -32,42 +32,14 @@ namespace JWTAuthencation.Controllers
                     from: new Twilio.Types.PhoneNumber("+18186394920"),
                     to: new Twilio.Types.PhoneNumber("+84" + phoneNumber)
                 );
-            return Ok("return successfully " + message.Sid + "content is "+ message.Body);
+            int lastIndex = message.Body.LastIndexOf(' ');
+            string lastWord = message.Body.Substring(lastIndex + 1);
+            return Ok(lastWord);
         }
 
-        [HttpPost]
-        [Route("SendEmail")]
-        public void SendEmail(SendEmail sendEmail)
-        {
-            // Thông tin tài khoản email của bạn
-            string smtpServer = "smtp.gmail.com";
-            string smtpUsername = "phucminhbeos@gmail.com";
-            string smtpPassword = "phuc11042003";
-            int smtpPort = 587;
+        
 
-            // Tạo đối tượng SmtpClient
-            using (SmtpClient smtpClient = new SmtpClient(smtpServer))
-            {
-                smtpClient.Port = smtpPort;
-                smtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
-                smtpClient.EnableSsl = true;
-
-                // Tạo đối tượng MailMessage
-                using (MailMessage mail = new MailMessage())
-                {
-                    mail.From = new MailAddress(smtpUsername);
-                    mail.To.Add(sendEmail.toEmail);
-                    mail.Subject = sendEmail.Subject;
-                    mail.Body = GenerateOTP();
-                    mail.IsBodyHtml = true;
-
-                    // Gửi email
-                    smtpClient.Send(mail);
-                }
-            }
-        }
-
-		private string GenerateOTP()
+        private string GenerateOTP()
         {
             
             string secretKey = "GQDSF4ORUIP2VF75";

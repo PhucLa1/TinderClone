@@ -5,7 +5,7 @@ namespace JWTAuthencation.Models
 {
     public partial class Call
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public byte? OfStatus { get; set; }
         public int? CallerId { get; set; }
         public int? ReceiverId { get; set; }

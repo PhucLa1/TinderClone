@@ -1,12 +1,13 @@
 ﻿using JWTAuthencation.Data;
 using JWTAuthencation.Models;
+using JWTAuthencation.Models.ViewModel;
 using Microsoft.AspNetCore.SignalR;
 
 namespace JWTAuthencation.Hubs
 {
     public class ChatHub : Hub
     {
-        private Dictionary<int, string> infoConnect = new Dictionary<int, string>();
+        public static Dictionary<int, string> infoConnect = new Dictionary<int, string>();
 		private readonly JWTAuthencationContext _context;
         private readonly IHubContext<ChatHub> _hubContext;
         public ChatHub(JWTAuthencationContext context, IHubContext<ChatHub> hubContext)
@@ -21,13 +22,13 @@ namespace JWTAuthencation.Hubs
                 SendUserId = fromID,
                 ReceiveUserId = toID,
                 Content = message,
-                SendTime = DateTime.UtcNow,
+                SendTime = DateTime.UtcNow.AddHours(7),
             };
             _context.Mess.Add(mess);
             _context.SaveChanges();
             try
             {
-                await Clients.Client(infoConnect[toID]).SendAsync("ReceiveMessage", fromID, toID, message);
+                await Clients.All.SendAsync("ReceiveMessage", fromID, toID, message);
             }catch (Exception ex)
             {
                 throw new Exception();
@@ -62,19 +63,99 @@ namespace JWTAuthencation.Hubs
         }
 
         //Gửi trạng thái trước khi gọi điện
-        public async Task CallWait(int toID)
+        // Người dùng bấm gọi và hiện ra popup gọi
+        public async Task CallWait(int fromID,int toID)
         {
-            await Clients.Client(infoConnect[toID]).SendAsync("CallWaitUser", toID);
+            //Lấy thông tin của thằng đang gọi đến cho thằng toID( tức là thằng FromID)
+            UserCall uC = new UserCall()
+            {
+                ID = fromID,
+                FullName = _context.Users.Where(e => e.Id == fromID).Select(e => e.FullName).FirstOrDefault(),
+                ImagePath = _context.Photo.Where(e => e.UserId == fromID).Select(e => "https://localhost:7251/Uploads/"+e.ImagePath).FirstOrDefault()
+            };
+            await Clients.Client(infoConnect[toID]).SendAsync("CallWaitUser", uC);
+            //Trả về thằng cần thông tin đang gọi
         }
-        public async Task CallAnswer(string userId,int from,int to,bool Ans)
+        public async Task MislabeledCall(int fromID, int toID)
         {
-            // Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
-            await Clients.All.SendAsync("CallAnswerUser", userId,from,to,Ans);
+            //fromID ở đây là thằng gọi, toID ở đây là thằng được gọi
+            Call call = new Call()
+            {
+                CallerId = fromID,
+                ReceiverId = toID,
+                StartTime = DateTime.UtcNow.AddHours(7),
+                EndTime = DateTime.UtcNow.AddHours(7),
+                Duration = 0,
+                CallStatusId = 2
+            };
+            _context.Calls.Add(call);
+            _context.SaveChanges();
+            //Cuộc gọi nhầm
+            Mess mess = new Mess()
+            {
+                SendUserId = fromID,
+                ReceiveUserId = toID,
+                SendTime = DateTime.UtcNow.AddHours(7),
+                Content = "<span className='text-red-900'>Mislabeled Call</span>"
+            };
+            _context.Mess.Add(mess);
+            _context.SaveChanges();
+            await Clients.Client(infoConnect[toID]).SendAsync("MislabeledCallUser");
+
         }
-		public async Task EndCall(string userId, int from,int to)
+        public async Task InitCall(int agreedID,int agreeID)
+        {
+            //Đây chính là thằng mà mình đăng nhập vào
+            //Code này chỉ để khởi tạo hình ảnh và âm thanh cho bên 2 thằng gọi trước
+            await Clients.Client(infoConnect[agreeID]).SendAsync("InitCallUser",agreeID,agreedID);
+        }
+        public async Task RejectCall(int fromID,int toID)
+        {
+            //fromID ở đây là thằng từ chối, toID là thằng bị từ chối
+            //Đồng nghĩa với việc là toID là thằng gọi tới , fromID là thằng nhận cuộc gọi
+            Call call = new Call()
+            {
+                CallerId = toID,
+                ReceiverId = fromID,
+                StartTime = DateTime.UtcNow.AddHours(7),
+                EndTime = DateTime.UtcNow.AddHours(7),
+                Duration = 0,
+                CallStatusId = 1
+            };
+            _context.Calls.Add(call);
+            
+            // 1 : Cuộc gọi bị từ chối
+            // 2: Cuộc gọi nhầm
+            //3 : Cuộc gọi thành công
+            //Gửi lên client
+            //toID là thằng gọi tới, vậy nên sẽ gửi dữ liệu của thằng fromID về cho toID
+            UserCall uReject = new UserCall()
+            {
+                ID = fromID,
+                FullName = _context.Users.Where(e => e.Id == fromID).Select(e => e.FullName).FirstOrDefault(),
+                ImagePath = _context.Photo.Where(e => e.UserId == fromID).Select(e => "https://localhost:7251/Uploads/" + e.ImagePath).FirstOrDefault()
+            };
+
+            //Lưu vào trong db text về mảng tin nhắn
+            Mess mess = new Mess()
+            {
+                SendUserId = fromID,
+                ReceiveUserId = toID,
+                SendTime = DateTime.UtcNow.AddHours(7),
+                Content = "<span className='text-red-900'>Call has to be reject</span>"
+            };
+            _context.Mess.Add(mess);
+            _context.SaveChanges();
+            await Clients.Client(infoConnect[toID]).SendAsync("RejectCallUser", uReject);
+        }
+        public async Task AgreeCall(string peerID,int fromID,int toID)
+        {
+            // fromID là thằng gọi đến, toID là thằng nhận cuộc gọi
+            await Clients.All.SendAsync("AgreeCallUser", peerID, fromID, toID);
+        }
+		public async Task EndCall(string peerID)
 		{
-			// Gửi tín hiệu trạng thái camera đến tất cả các thành viên trong phòng
-			await Clients.All.SendAsync("CallAnswerUser", userId, from,to);
+			await Clients.All.SendAsync("EndCallUser", peerID);
 		}
     }
 }

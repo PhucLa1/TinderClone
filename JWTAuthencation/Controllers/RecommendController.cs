@@ -26,7 +26,7 @@ namespace JWTAuthencation.Controllers
 
         private double HaversineDistance(double latA, double longA, double latB, double longB)
         {
-            var R = 3958.8; // Radius of the Earth in miles
+            var R = 6371.0;
             var rlat1 = latA * (Math.PI / 180);
             var rlat2 = latB * (Math.PI / 180);
             var difflat = rlat2 - rlat1;
@@ -48,6 +48,8 @@ namespace JWTAuthencation.Controllers
         }
 
 
+
+
         private ConciseUser ReadConciseUser(int userId)
         {
             var user = _context.Users.FirstOrDefault(x => x.Id == userId);
@@ -57,9 +59,9 @@ namespace JWTAuthencation.Controllers
             if (userSetting == null)
                 throw new Exception("Failed to read user setting.");
             int Age = DateTime.Today.Year - (user.DOB ?? DateTime.Today).Year;
-            int MaxDistance = (userSetting.DistancePreference ?? 1000000) * 621;
+            int MaxDistance = (userSetting.DistancePreference ?? 1000000);
             if ((user.DOB ?? DateTime.Today) > DateTime.Today.AddYears(Age)) Age--;
-            if ((userSetting.DistanceUnit ?? 1) == 2) MaxDistance /= 1000;
+            if ((userSetting.DistanceUnit ?? 1) == 2) MaxDistance *= 1000;
             return new ConciseUser()
             {
                 Latitude = userSetting.Latitute ?? 0.0,
@@ -78,7 +80,7 @@ namespace JWTAuthencation.Controllers
         {
             ConciseUser user = ReadConciseUser(id);
 
-            var LikeIdList = _context.Likes.Where(x => x.LikedUserId == id && x.Matches == false).Select(x => x.LikeUserId).OrderBy(x => Guid.NewGuid()).ToList(); //Raw candidates
+            var LikeIdList = _context.Likes.Where(x => x.LikedUserId == id).Select(x => x.LikeUserId).OrderBy(x => Guid.NewGuid()).ToList(); //Raw candidates
             var ListA = new List<int>();
             var SetA = new HashSet<int>();
             foreach (int lid in LikeIdList) //One-way check: user favors liker
@@ -154,17 +156,61 @@ namespace JWTAuthencation.Controllers
             foreach (var x in FavorList) //Twoway check, 2/2
             {
                 int xAge = DateTime.Today.Year - x.DOB.Year;
-                int xMaxDistance = x.MaxDistance * 621;
+                int xMaxDistance = x.MaxDistance;
                 double distance = HaversineDistance(user.Latitude, user.Longtitude, x.Latitude, x.Longtitude);
                 if (x.DOB > DateTime.Today.AddYears(-xAge)) xAge--;
-                if (x.DistanceUnit == 2) xMaxDistance /= 1000;
+                if (x.DistanceUnit == 2) xMaxDistance *= 1000;
                 if (xAge > user.AgeMax || xAge < user.AgeMin) continue;
                 if (distance > Math.Min(user.MaxDistance, xMaxDistance)) continue;
                 ListB.Add(x.Id);
                 if (ListB.Count >= maxAmt)
                     break;
             }
+            ListA.Remove(id); ListB.Remove(id);
+
+            //Get all user match the user where has the id mention
+            var matchUser = _context.Likes.
+                Where(e => (e.LikeUserId == id || e.LikedUserId == id) && e.Matches == true)
+                .Select(e => e.LikeUserId == id ? e.LikedUserId : e.LikeUserId)
+                .ToList();
+            ////Remove part 2
+            ListA = ListA.Where(e => !matchUser.Contains(e)).ToList();
+            ListB = ListB.Where(e => !matchUser.Contains(e)).ToList();
+
+            //Remove part 3
+            var likedUser = _context.Likes.
+                    Where(e => e.LikeUserId == id)
+                    .Select(e => e.LikeUserId == id ? e.LikedUserId : e.LikeUserId)
+                    .ToList();
+            ListA = ListA.Where(e => !likedUser.Contains(e)).ToList();
+            ListB = ListB.Where(e => !likedUser.Contains(e)).ToList();
+
+            //Remove part 4
+            var unlikeUser = _context.Unlike.Where(e => e.UnlikeUserId == id).Select(e => e.UnlikedUserId).ToList();
+            ListA = ListA.Where(e => !unlikeUser.Contains(e)).ToList();
+            ListB = ListB.Where(e => !unlikeUser.Contains(e)).ToList();
             return Ok(new Tuple<List<int>, List<int>>(ListA, ListB));
+        }
+
+        [HttpPost]
+        [Route("GetDetailRecommend")]
+        public async Task<IActionResult> GetDetailRecommend(int userID, List<int> recommendList)
+        {
+
+            var User = _context.Setting.Where(e => e.Id == userID).Select(e => new { lat = e.Latitute, longt = e.Longtitute }).FirstOrDefault();
+            var res = _context.Users.
+                Where(e => recommendList.Contains(e.Id.Value)).
+                Join(_context.Setting, u => u.Id, s => s.Id, (u, s) => new DetailRecommend
+                {
+                    ID = u.Id.Value,
+                    FullName = u.FullName,
+                    LiveAt = u.LiveAt,
+                    Age = DateTime.UtcNow.Year - u.DOB.Value.Year - (DateTime.UtcNow < u.DOB.Value.AddYears(DateTime.UtcNow.Year - u.DOB.Value.Year) ? 1 : 0),
+                    ImagePath = _context.Photo.Where(e => e.UserId == u.Id).Select(e => "https://localhost:7251/Uploads/" + e.ImagePath).ToList(),
+                    Distance = Math.Round(6371.0 * 2 * Math.Asin(Math.Sqrt(Math.Pow(Math.Sin((s.Latitute.Value - User.lat.Value) * Math.PI / 180 / 2), 2) + Math.Cos(User.lat.Value * Math.PI / 180) * Math.Cos(s.Latitute.Value * Math.PI / 180) * Math.Pow(Math.Sin((s.Longtitute.Value - User.longt.Value) * Math.PI / 180 / 2), 2))), 1)
+                });
+
+            return Ok(res);
         }
         [HttpGet("RecommendInfo")]
         public async Task<IActionResult> RecommendInfo(int id)
